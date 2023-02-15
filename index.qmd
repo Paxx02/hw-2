@@ -51,7 +51,7 @@ EDA using `readr`, `tidyr` and `ggplot2`
 
 Load the "Abalone" dataset as a tibble called `abalone` using the URL provided below. The `abalone_col_names` variable contains a vector of the column names for this dataset (to be consistent with the R naming pattern). Make sure you read the dataset with the provided column names. 
 
-```R
+```{R}
 library(readr)
 url <- "http://archive.ics.uci.edu/ml/machine-learning-databases/abalone/abalone.data"
 
@@ -67,7 +67,8 @@ abalone_col_names <- c(
   "rings"
 )
 
-abalone <- ... # Insert your code here
+abalone <- read_csv(url, col_names = abalone_col_names)
+abalone %>% head()
 ```
 
 ---
@@ -76,9 +77,14 @@ abalone <- ... # Insert your code here
 
 Remove missing values and `NA`s from the dataset and store the cleaned data in a tibble called `df`. How many rows were dropped?
 
-```R
-df <- ... # Insert your code here
+```{R}
+df <- abalone %>%
+  drop_na()
+df %>% head()
+
+r_drop <- nrow(abalone) - nrow(df)
 ```
+
 
 
 
@@ -89,8 +95,11 @@ df <- ... # Insert your code here
 
 Plot histograms of all the quantitative variables in a **single plot** [^footnote_facet_wrap]
 
-```R
-... # Insert your code here
+```{R}
+df %>%
+  select(!sex) %>%
+  gather() %>%
+  ggplot(aes(value)) + facet_wrap(~ key, scales = "free") + geom_histogram()
 ```
 
 
@@ -100,12 +109,14 @@ Plot histograms of all the quantitative variables in a **single plot** [^footnot
 
 Create a boxplot of `length` for each `sex` and create a violin-plot of of `diameter` for each `sex`. Are there any notable differences in the physical appearences of abalones based on your analysis here?
 
-```R
-... # Insert your code for boxplot here
+```{R}
+plot2 <- ggplot(df, aes(x = sex, y = length)) + geom_boxplot()
+plot2
 ```
 
-```R
-... # Insert your code for violinplot here
+```{R}
+plot3 <- ggplot(df, aes(x = sex, y = diameter)) + geom_violin()
+plot3
 ```
 
 
@@ -117,8 +128,9 @@ Create a scatter plot of `length` and `diameter`, and modify the shape and color
 
 
 
-```R
-... # Insert your code here
+```{R}
+plot4 <- ggplot(df, aes(x = length, y = diameter, color = sex, size = shell_weight)) + geom_point()
+plot4
 ```
 
 ---
@@ -128,8 +140,10 @@ Create a scatter plot of `length` and `diameter`, and modify the shape and color
 For each `sex`, create separate scatter plots of `length` and `diameter`. For each plot, also add a **linear** trendline to illustrate the relationship between the variables. Use the `facet_wrap()` function in R for this, and ensure that the plots are vertically stacked **not** horizontally. You should end up with a plot that looks like this: [^footnote_plot_facet]
 
 
-```R
-... # Insert your code here
+```{R}
+plot5 <- ggplot(df, aes(x = length, y = diameter)) + geom_point(aes(color = sex)) + geom_smooth(method = "lm", se = FALSE) + facet_wrap(~sex,, ncol = 1)
+plot5
+
 ```
 
 
